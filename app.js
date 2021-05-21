@@ -2,6 +2,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var mongoose = require('mongoose');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -14,6 +15,9 @@ var app = express();
 //ask bob about this section
 var connectionString = "mongo"mongodb+srv://warroom.byzmr.mongodb.net/myFirstDatabase" --username dbuser"
 const {MongoClient} = require('mongodb');
+mongoose.connect(connectionString, {useNewUrlParser: true, useUnifiedTopology: true }, function() { 
+    console.log("database is connected");
+});
 
 app.use(logger('dev'));
 app.use(express.json());
