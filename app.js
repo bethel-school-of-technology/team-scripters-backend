@@ -13,7 +13,7 @@ var app = express();
 
 //MONGO CONNECTION
 //ask bob about this section
-var connectionString = "mongo"mongodb+srv://warroom.byzmr.mongodb.net/myFirstDatabase" --username dbuser"
+var connectionString = "mongodb+srv://warroom.byzmr.mongodb.net/myFirstDatabase" 
 const {MongoClient} = require('mongodb');
 mongoose.connect(connectionString, {useNewUrlParser: true, useUnifiedTopology: true }, function() { 
     console.log("database is connected");
@@ -26,6 +26,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('api/users', usersRouter);
 
 module.exports = app;
