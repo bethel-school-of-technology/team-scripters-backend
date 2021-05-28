@@ -13,7 +13,7 @@ var app = express();
 
 //MONGO CONNECTION
 //ask bob about this section
-var connectionString = "mongodb+srv://warroom.byzmr.mongodb.net/myFirstDatabase" 
+var connectionString = "" 
 const {MongoClient} = require('mongodb');
 mongoose.connect(connectionString, {useNewUrlParser: true, useUnifiedTopology: true }, function() { 
     console.log("database is connected");
