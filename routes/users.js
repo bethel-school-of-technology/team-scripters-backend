@@ -1,24 +1,24 @@
 var express = require('express');
 const { route } = require('.');
 var router = express.Router();
-var User = require('./models/user')
+var User = require('../models/users')
 
 var tokenService = require('../services/auth');
-var passwordService = require('../services/passwords');
+var passwordService = require('../services/password');
 
 // route for user registration (add User) -> /register
 router.post('/register', async (req,res,next) => {
 
  try{
-   //console.log(req.body)
+   console.log(req.body)
     let newUser = new User({
       firstName: req.body.firstName,
-      lastName: eq.body.lastName,
-      userName: req.body.userName,
+      lastName: req.body.lastName,
+      username: req.body.username,
       email: req.body.email,
-      userName: req.body.userName,
-      password: req.body.password
+      password: passwordService.hashPassword(req.body.password)
     });
+    
     //console.log(newUser)
     let result = await newUser.save();
     //console.log(result);
@@ -37,10 +37,11 @@ router.post('/register', async (req,res,next) => {
 })
 
 
+
 // route for login -> /login
 router.post('/login', async (req,res,next) => {
 //console.log(req.body);
-User.findOne({username: req.body.username}, function(err, user){
+  User.findOne({username: req.body.username}, function(err, user){
 if(err){
   console.log(err)
   res.json({
@@ -86,11 +87,20 @@ router.post('/profile', async (req,res,next) => {
   if(myToken){
     let currentUser = await tokenService.verifyToken(myToken);
     console.log(currentUser);
+   
     if(currentUser){
+      let responseUser = {
+        firstName: currentUser.firstName,
+        lastName: currentUser.lastName,
+        email: currentUser.email,
+        username: currentUser.username,
+        deleted: currentUser.deleted,
+        admin: currentUser.admin
+      }
       res.json({
         message: "user profile information",
         status: 200,
-        user
+        user: responseUser
       })
     }
   else{
@@ -107,6 +117,7 @@ router.post('/profile', async (req,res,next) => {
     })
   }
 })
+ 
 
 
 module.exports = router;
