@@ -17,7 +17,7 @@ var tokenService = {
         )
             return token;
     },
-    verifyToken = function(token){
+    verifyToken: function(token){
         try{
             let decoded = jwt.verify(token, 'mysupersecretkey');
             return User.findById(decoded._id);
