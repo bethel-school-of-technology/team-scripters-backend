@@ -30,7 +30,7 @@ router.post('/register', async (req,res,next) => {
  catch(err){
   console.log(err);
   res.json({
-    message: "Wrong Password",
+    message: "User not created successfully",
     status: 403,
   })
  }
@@ -49,7 +49,7 @@ if(err){
     status: 500
   });
 }
-console.log(result);
+console.log(user);
 if(user){
     let passwordMatch = passwordService.comparePasswords(req.body.password, user.password);
     if(passwordMatch){
@@ -79,7 +79,7 @@ if(user){
 
 })
 // route to get user profile information -> /profile
-router.post('/profile', async (req,res,next) => {
+router.get('/profile', async (req,res,next) => {
   //console.log(req.headers);
   let myToken = req.headers.authorization;
   console.log(myToken);
