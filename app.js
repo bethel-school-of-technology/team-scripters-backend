@@ -15,7 +15,7 @@ var app = express();
 
 //MONGO CONNECTION
 
-var connectionString = "";
+var connectionString = "mongodb+srv://dbuser:2YLaLCLpnA3Cy1qg@warroom.byzmr.mongodb.net/test";
 //const {MongoClient} = require('mongodb');
 mongoose.connect(connectionString, {useNewUrlParser: true, useUnifiedTopology: true }, function() { 
     console.log("database is connected");
