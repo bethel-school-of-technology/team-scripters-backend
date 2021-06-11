@@ -95,7 +95,8 @@ router.get('/profile', async (req,res,next) => {
         email: currentUser.email,
         username: currentUser.username,
         deleted: currentUser.deleted,
-        admin: currentUser.admin
+        admin: currentUser.admin,
+        _id: currentUser._id
       }
       res.json({
         message: "user profile information",
@@ -116,6 +117,26 @@ router.get('/profile', async (req,res,next) => {
       status: 403,
     })
   }
+})
+
+//route to update users profile information
+router.put('/edit-profile', async (req, res, next) => {
+console.log(req.body)
+  User.findOneAndUpdate({_id: req.body.id}, {
+      $set: {
+        firstName: req.body.data.firstName,
+        lastName: req.body.data.lastName,
+        email: req.body.data.email,
+        username: req.body.data.username,
+  } }, (error, data) => {
+      if (error) {
+          return next(error);
+          console.log(error)
+      } else {
+          res.json(data)
+          console.log('Profile updated successfully')
+      }
+  })
 })
  
 
