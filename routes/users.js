@@ -138,7 +138,19 @@ console.log(req.body)
       }
   })
 })
- 
+
+router.get('/search-users', function (req,res) {
+  User.find({
+  }, function (err, users) {
+    if(err){
+      res.send("cant find all users");
+      next();
+    }
+    res.json(users);
+  })
+})
+
+
 
 
 module.exports = router;
