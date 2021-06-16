@@ -7,10 +7,10 @@ var tokenService = require('../services/auth');
 var passwordService = require('../services/password');
 
 // route for user registration (add User) -> /register
-router.post('/register', async (req,res,next) => {
+router.post('/register', async (req, res, next) => {
 
- try{
-   console.log(req.body)
+  try {
+    console.log(req.body)
     let newUser = new User({
       firstName: req.body.firstName,
       lastName: req.body.lastName,
@@ -18,7 +18,7 @@ router.post('/register', async (req,res,next) => {
       email: req.body.email,
       password: passwordService.hashPassword(req.body.password)
     });
-    
+
     //console.log(newUser)
     let result = await newUser.save();
     //console.log(result);
@@ -26,69 +26,69 @@ router.post('/register', async (req,res,next) => {
       message: "User created successfuly",
       status: 200
     })
- }
- catch(err){
-  console.log(err);
-  res.json({
-    message: "User not created successfully",
-    status: 403,
-  })
- }
+  }
+  catch (err) {
+    console.log(err);
+    res.json({
+      message: "User not created successfully",
+      status: 403,
+    })
+  }
 })
 
 
 
 // route for login -> /login
-router.post('/login', async (req,res,next) => {
-//console.log(req.body);
-  User.findOne({username: req.body.username}, function(err, user){
-if(err){
-  console.log(err)
-  res.json({
-    message: "Error accessing database",
-    status: 500
-  });
-}
-console.log(user);
-if(user){
-    let passwordMatch = passwordService.comparePasswords(req.body.password, user.password);
-    if(passwordMatch){
-      //create the token
-       let token = tokenService.assignToken(user);
-       res.json({
-         message: "Login successful",
-         status: 200,
-         token
-       })
-    }
-    else{
-      console.log("Wrong Password");
+router.post('/login', async (req, res, next) => {
+  //console.log(req.body);
+  User.findOne({ username: req.body.username }, function (err, user) {
+    if (err) {
+      console.log(err)
       res.json({
-        message: "Wrong Password",
-        status: 403
+        message: "Error accessing database",
+        status: 500
       });
     }
-}
-  else{
-    res.json({
-      message: "wrong username",
-      status: 401,
-    })
-  }
-});
+    console.log(user);
+    if (user) {
+      let passwordMatch = passwordService.comparePasswords(req.body.password, user.password);
+      if (passwordMatch) {
+        //create the token
+        let token = tokenService.assignToken(user);
+        res.json({
+          message: "Login successful",
+          status: 200,
+          token
+        })
+      }
+      else {
+        console.log("Wrong Password");
+        res.json({
+          message: "Wrong Password",
+          status: 403
+        });
+      }
+    }
+    else {
+      res.json({
+        message: "wrong username",
+        status: 401,
+      })
+    }
+  });
 
 })
 // route to get user profile information -> /profile
-router.get('/profile', async (req,res,next) => {
+router.get('/profile', async (req, res, next) => {
   //console.log(req.headers);
   let myToken = req.headers.authorization;
   console.log(myToken);
 
-  if(myToken){
+  if (myToken) {
     let currentUser = await tokenService.verifyToken(myToken);
     console.log(currentUser);
-   
-    if(currentUser){
+
+    if (currentUser) {
       let responseUser = {
         firstName: currentUser.firstName,
         lastName: currentUser.lastName,
@@ -104,14 +104,14 @@ router.get('/profile', async (req,res,next) => {
         user: responseUser
       })
     }
-  else{
-    res.json({
-      message: "Token was invalid or expired",
-      status: 403,
+    else {
+      res.json({
+        message: "Token was invalid or expired",
+        status: 403,
       })
     }
   }
-  else{
+  else {
     res.json({
       message: "no token received",
       status: 403,
@@ -121,28 +121,29 @@ router.get('/profile', async (req,res,next) => {
 
 //route to update users profile information
 router.put('/edit-profile', async (req, res, next) => {
-console.log(req.body)
-  User.findOneAndUpdate({_id: req.body.id}, {
-      $set: {
-        firstName: req.body.data.firstName,
-        lastName: req.body.data.lastName,
-        email: req.body.data.email,
-        username: req.body.data.username,
-  } }, (error, data) => {
-      if (error) {
-          return next(error);
-          console.log(error)
-      } else {
-          res.json(data)
-          console.log('Profile updated successfully')
-      }
+  console.log(req.body)
+  User.findOneAndUpdate({ _id: req.body.id }, {
+    $set: {
+      firstName: req.body.data.firstName,
+      lastName: req.body.data.lastName,
+      email: req.body.data.email,
+      username: req.body.data.username,
+    }
+  }, (error, data) => {
+    if (error) {
+      return next(error);
+      console.log(error)
+    } else {
+      res.json(data)
+      console.log('Profile updated successfully')
+    }
   })
 })
 
-router.get('/search-users', function (req,res) {
+router.get('/search-users', function (req, res) {
   User.find({
   }, function (err, users) {
-    if(err){
+    if (err) {
       res.send("cant find all users");
       next();
     }
